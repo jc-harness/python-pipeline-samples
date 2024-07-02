@@ -90,7 +90,7 @@ pipeline:
                     shell: Sh
                     command: |-
                       sleep 10
-                      curl localhost:5000
+                      curl http://172.18.0.2:5000
           platform:
             os: Linux
             arch: Arm64
