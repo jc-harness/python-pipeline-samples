@@ -69,8 +69,6 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: false
-          infrastructure:
-            useFromStage: Build_Test_and_Push
           execution:
             steps:
               - step:
@@ -93,3 +91,9 @@ pipeline:
                     command: |-
                       sleep 10
                       curl localhost:5000
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Cloud
+            spec: {}
