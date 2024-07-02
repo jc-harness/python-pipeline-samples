@@ -7,7 +7,7 @@ pipeline:
   properties:
     ci:
       codebase:
-        connectorRef: jcgithubconnector
+        connectorRef: pythonsampleconnector
         build: <+input>
   stages:
     - stage:
@@ -17,6 +17,14 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: Python_project_k8_delegate_connector
+              namespace: python-project
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
           execution:
             steps:
               - step:
@@ -24,7 +32,7 @@ pipeline:
                   name: Compile Code
                   identifier: Compile_Code
                   spec:
-                    connectorRef: jc-dockerhub-token
+                    connectorRef: dockerhub_python_project_token
                     image: python:3.10.6-alpine
                     shell: Sh
                     command: python -m compileall ./
@@ -33,7 +41,7 @@ pipeline:
                   name: Create Docker file
                   identifier: Create_Docker_file
                   spec:
-                    connectorRef: jc-dockerhub-token
+                    connectorRef: dockerhub_python_project_token
                     image: alpine
                     shell: Sh
                     command: |-
@@ -51,17 +59,11 @@ pipeline:
                   name: Build and Push to Docker Hub
                   identifier: Build_and_Push_to_Docker_Hub
                   spec:
-                    connectorRef: jcdockerhubconnector
+                    connectorRef: dockerhub_python_project_token
                     repo: john8260/python-project
                     tags:
                       - latest
                     dockerfile: pythondockerfile
-          platform:
-            os: Linux
-            arch: Arm64
-          runtime:
-            type: Cloud
-            spec: {}
     - stage:
         name: Integration tests
         identifier: Integration_tests
@@ -78,7 +80,7 @@ pipeline:
                   name: Python server
                   identifier: Python_server
                   spec:
-                    connectorRef: jc-dockerhub-token
+                    connectorRef: dockerhub_python_project_token
                     image: john8260/python-project
                     shell: Sh
                     command: python3 /python-pipeline-samples/app.py
@@ -87,7 +89,7 @@ pipeline:
                   name: Test connection to the server
                   identifier: Test_connection_to_the_server
                   spec:
-                    connectorRef: jc-dockerhub-token
+                    connectorRef: dockerhub_python_project_token
                     image: curlimages/curl:7.73.0
                     shell: Sh
                     command: |-
