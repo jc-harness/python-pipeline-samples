@@ -17,14 +17,6 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: true
-          infrastructure:
-            type: KubernetesDirect
-            spec:
-              connectorRef: Python_project_k8_delegate_connector
-              namespace: python-project
-              automountServiceAccountToken: true
-              nodeSelector: {}
-              os: Linux
           execution:
             steps:
               - step:
@@ -59,11 +51,17 @@ pipeline:
                   name: Build and Push to Docker Hub
                   identifier: Build_and_Push_to_Docker_Hub
                   spec:
-                    connectorRef: dockerhub_python_project_token
+                    connectorRef: jcdockerhubconnector
                     repo: john8260/python-project
                     tags:
                       - latest
                     dockerfile: pythondockerfile
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Cloud
+            spec: {}
     - stage:
         name: Integration tests
         identifier: Integration_tests
