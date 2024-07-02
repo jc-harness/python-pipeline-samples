@@ -24,7 +24,7 @@ pipeline:
                   name: Compile Code
                   identifier: Compile_Code
                   spec:
-                    connectorRef: dockerhub_python_project_token
+                    connectorRef: jc-dockerhub-token
                     image: python:3.10.6-alpine
                     shell: Sh
                     command: python -m compileall ./
@@ -33,7 +33,7 @@ pipeline:
                   name: Create Docker file
                   identifier: Create_Docker_file
                   spec:
-                    connectorRef: dockerhub_python_project_token
+                    connectorRef: jc-dockerhub-token
                     image: alpine
                     shell: Sh
                     command: |-
@@ -78,7 +78,7 @@ pipeline:
                   name: Python server
                   identifier: Python_server
                   spec:
-                    connectorRef: dockerhub_python_project_token
+                    connectorRef: jc-dockerhub-token
                     image: john8260/python-project
                     shell: Sh
                     command: python3 /python-pipeline-samples/app.py
@@ -87,7 +87,7 @@ pipeline:
                   name: Test connection to the server
                   identifier: Test_connection_to_the_server
                   spec:
-                    connectorRef: dockerhub_python_project_token
+                    connectorRef: jc-dockerhub-token
                     image: curlimages/curl:7.73.0
                     shell: Sh
                     command: |-
