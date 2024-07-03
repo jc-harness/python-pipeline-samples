@@ -19,31 +19,6 @@ pipeline:
           cloneCodebase: true
           execution:
             steps:
-              - parallel:
-                  - step:
-                      type: Run
-                      name: Install dependencies
-                      identifier: Install_dependencies
-                      spec:
-                        shell: Sh
-                        command: pip install -r requirements.txt
-                  - step:
-                      type: Snyk
-                      name: Snyk
-                      identifier: Snyk
-                      spec:
-                        mode: orchestration
-                        config: default
-                        target:
-                          type: repository
-                          detection: auto
-                        advanced:
-                          log:
-                            level: info
-                        auth:
-                          access_token: <+secrets.getValue("jc-snyk-token")>
-                        sbom:
-                          format: spdx-json
               - step:
                   type: Run
                   name: Compile Code
@@ -52,7 +27,26 @@ pipeline:
                     connectorRef: jcdockerhubconnector
                     image: python:3.10.6-alpine
                     shell: Sh
-                    command: python -m compileall ./
+                    command: |-
+                      python -m compileall ./
+                      pip install -e .
+              - step:
+                  type: Snyk
+                  name: Snyk
+                  identifier: Snyk
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    auth:
+                      access_token: <+secrets.getValue("jc-snyk-token")>
+                    sbom:
+                      format: spdx-json
               - step:
                   type: Run
                   name: Create Docker file
@@ -90,6 +84,8 @@ pipeline:
           caching:
             enabled: true
             paths: []
+          sharedPaths:
+            - /shared/scan_results
     - stage:
         name: Integration tests
         identifier: Integration_tests
