@@ -29,23 +29,6 @@ pipeline:
                     shell: Sh
                     command: python -m compileall ./
               - step:
-                  type: Snyk
-                  name: Snyk
-                  identifier: Snyk
-                  spec:
-                    mode: orchestration
-                    config: default
-                    target:
-                      type: repository
-                      detection: auto
-                    advanced:
-                      log:
-                        level: info
-                    auth:
-                      access_token: <+secrets.getValue("jc-snyk-token")>
-                    sbom:
-                      format: spdx-json
-              - step:
                   type: Run
                   name: Create Docker file
                   identifier: Create_Docker_file
@@ -63,6 +46,23 @@ pipeline:
                       CMD ["python" , "app.py"]
                       EOM
                       cat pythondockerfile
+              - step:
+                  type: Snyk
+                  name: Snyk
+                  identifier: Snyk
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    auth:
+                      access_token: <+secrets.getValue("jc-snyk-token")>
+                    sbom:
+                      format: spdx-json
               - step:
                   type: BuildAndPushDockerRegistry
                   name: Build and Push to Docker Hub
