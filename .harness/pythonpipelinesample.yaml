@@ -123,14 +123,14 @@ pipeline:
           execution:
             steps:
               - step:
-                  name: approval
+                  name: approve deployment
                   identifier: approval
                   type: HarnessApproval
                   timeout: 1d
                   spec:
                     approvalMessage: |-
                       Please review the following information
-                      and approve the pipeline progression
+                      and approve the deployment of the artifact
                     includePipelineExecutionHistory: true
                     approvers:
                       minimumCount: 1
