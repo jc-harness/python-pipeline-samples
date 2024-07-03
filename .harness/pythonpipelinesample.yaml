@@ -20,13 +20,6 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: Run
-                  name: install dependencies
-                  identifier: install_dependencies
-                  spec:
-                    shell: Sh
-                    command: pip install -r requirements.txt
-              - step:
                   type: Snyk
                   name: Snyk
                   identifier: Snyk
