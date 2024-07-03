@@ -63,7 +63,7 @@ pipeline:
                     language: Python
                     buildTool: Pytest
                     runOnlySelectedTests: true
-                    preCommand: pip install -r requirements.txt pytest
+                    preCommand: pip install -r requirements.txt
                     enableTestSplitting: false
               - step:
                   type: BuildAndPushDockerRegistry
