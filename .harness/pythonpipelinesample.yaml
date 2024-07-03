@@ -19,33 +19,32 @@ pipeline:
           cloneCodebase: true
           execution:
             steps:
-              - parallel:
-                  - step:
-                      type: Run
-                      name: Compile Code
-                      identifier: Compile_Code
-                      spec:
-                        connectorRef: jcdockerhubconnector
-                        image: python:3.10.6-alpine
-                        shell: Sh
-                        command: python -m compileall ./
-                  - step:
-                      type: Snyk
-                      name: Snyk
-                      identifier: Snyk
-                      spec:
-                        mode: orchestration
-                        config: default
-                        target:
-                          type: repository
-                          detection: auto
-                        advanced:
-                          log:
-                            level: info
-                        auth:
-                          access_token: <+secrets.getValue("jc-snyk-token")>
-                        sbom:
-                          format: spdx-json
+              - step:
+                  type: Snyk
+                  name: Snyk
+                  identifier: Snyk
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    auth:
+                      access_token: <+secrets.getValue("jc-snyk-token")>
+                    sbom:
+                      format: spdx-json
+              - step:
+                  type: Run
+                  name: Compile Code
+                  identifier: Compile_Code
+                  spec:
+                    connectorRef: jcdockerhubconnector
+                    image: python:3.10.6-alpine
+                    shell: Sh
+                    command: python -m compileall ./
               - step:
                   type: Run
                   name: Create Docker file
