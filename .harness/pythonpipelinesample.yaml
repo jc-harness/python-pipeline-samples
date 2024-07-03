@@ -79,6 +79,9 @@ pipeline:
           runtime:
             type: Cloud
             spec: {}
+          caching:
+            enabled: true
+            paths: []
     - stage:
         name: Integration tests
         identifier: Integration_tests
