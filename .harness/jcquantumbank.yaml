@@ -62,9 +62,8 @@ pipeline:
                   spec:
                     language: Python
                     buildTool: Pytest
-                    args: ./test/*.py --junitxml=out_report.xml
                     runOnlySelectedTests: true
-                    preCommand: pip install -r requirements.txt
+                    preCommand: pip install -r requirements.txt pytest
                     enableTestSplitting: false
               - step:
                   type: BuildAndPushDockerRegistry
