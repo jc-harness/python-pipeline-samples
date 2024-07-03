@@ -1,0 +1,78 @@
+pipeline:
+  name: jc-quantum-bank
+  identifier: jcquantumbank
+  projectIdentifier: jcproject
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: jcgithubconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: Build Test and Push
+        identifier: Build_Test_and_Push
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          caching:
+            enabled: true
+            paths: []
+          execution:
+            steps:
+              - parallel:
+                  - step:
+                      type: Owasp
+                      name: Owasp
+                      identifier: Owasp
+                      spec:
+                        mode: orchestration
+                        config: default
+                        target:
+                          type: repository
+                          detection: auto
+                        advanced:
+                          log:
+                            level: info
+                  - step:
+                      type: OsvScanner
+                      name: OsvScanner
+                      identifier: OsvScanner
+                      spec:
+                        mode: orchestration
+                        config: default
+                        target:
+                          type: repository
+                          detection: auto
+                        advanced:
+                          log:
+                            level: info
+              - step:
+                  type: RunTests
+                  name: RunTests
+                  identifier: RunTests
+                  spec:
+                    language: Python
+                    buildTool: Pytest
+                    args: ./test/*.py --junitxml=out_report.xml
+                    runOnlySelectedTests: true
+                    preCommand: pip install -r requirements.txt
+                    enableTestSplitting: false
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry
+                  identifier: BuildAndPushDockerRegistry
+                  spec:
+                    connectorRef: jcdockerhubconnector
+                    repo: john8260/quantum-bank-backend
+                    tags:
+                      - <+pipeline.sequenceId>
+                    dockerfile: ./Dockerfile
