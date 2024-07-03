@@ -20,6 +20,15 @@ pipeline:
           execution:
             steps:
               - step:
+                  type: Run
+                  name: Compile Code
+                  identifier: Compile_Code
+                  spec:
+                    connectorRef: jcdockerhubconnector
+                    image: python:3.10.6-alpine
+                    shell: Sh
+                    command: python -m compileall ./
+              - step:
                   type: Snyk
                   name: Snyk
                   identifier: Snyk
@@ -36,15 +45,6 @@ pipeline:
                       access_token: <+secrets.getValue("jc-snyk-token")>
                     sbom:
                       format: spdx-json
-              - step:
-                  type: Run
-                  name: Compile Code
-                  identifier: Compile_Code
-                  spec:
-                    connectorRef: jcdockerhubconnector
-                    image: python:3.10.6-alpine
-                    shell: Sh
-                    command: python -m compileall ./
               - step:
                   type: Run
                   name: Create Docker file
