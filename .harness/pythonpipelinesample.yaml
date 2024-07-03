@@ -21,6 +21,30 @@ pipeline:
             steps:
               - step:
                   type: Run
+                  name: install dependencies
+                  identifier: install_dependencies
+                  spec:
+                    shell: Sh
+                    command: pip install -r requirements.txt
+              - step:
+                  type: Snyk
+                  name: Snyk
+                  identifier: Snyk
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: repository
+                      detection: auto
+                    advanced:
+                      log:
+                        level: info
+                    auth:
+                      access_token: <+secrets.getValue("jc-snyk-token")>
+                    sbom:
+                      format: spdx-json
+              - step:
+                  type: Run
                   name: Compile Code
                   identifier: Compile_Code
                   spec:
@@ -46,23 +70,6 @@ pipeline:
                       CMD ["python" , "app.py"]
                       EOM
                       cat pythondockerfile
-              - step:
-                  type: Snyk
-                  name: Snyk
-                  identifier: Snyk
-                  spec:
-                    mode: orchestration
-                    config: default
-                    target:
-                      type: repository
-                      detection: auto
-                    advanced:
-                      log:
-                        level: info
-                    auth:
-                      access_token: <+secrets.getValue("jc-snyk-token")>
-                    sbom:
-                      format: spdx-json
               - step:
                   type: BuildAndPushDockerRegistry
                   name: Build and Push to Docker Hub
