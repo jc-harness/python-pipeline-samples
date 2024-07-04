@@ -78,32 +78,6 @@ pipeline:
                       - <+pipeline.sequenceId>
                     dockerfile: ./Dockerfile
     - stage:
-        name: Approve Deployment
-        identifier: Approve_Deployment
-        description: ""
-        type: Approval
-        spec:
-          execution:
-            steps:
-              - step:
-                  name: Approve deployment
-                  identifier: Approve_deployment
-                  type: HarnessApproval
-                  timeout: 1d
-                  spec:
-                    approvalMessage: |-
-                      Please review the following information
-                      and approve the deployment
-                    includePipelineExecutionHistory: true
-                    approvers:
-                      minimumCount: 1
-                      disallowPipelineExecutor: false
-                      userGroups:
-                        - _project_all_users
-                    isAutoRejectEnabled: false
-                    approverInputs: []
-        tags: {}
-    - stage:
         name: Deploy to Kubernetes
         identifier: Deploy
         description: ""
@@ -121,6 +95,21 @@ pipeline:
               - identifier: kubernetes
           execution:
             steps:
+              - step:
+                  type: HarnessApproval
+                  name: HarnessApproval
+                  identifier: HarnessApproval
+                  spec:
+                    approvalMessage: Please review the following information and approve the deployment progression
+                    includePipelineExecutionHistory: true
+                    isAutoRejectEnabled: false
+                    approvers:
+                      userGroups:
+                        - _project_all_users
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                    approverInputs: []
+                  timeout: 1d
               - step:
                   name: Rollout Deployment
                   identifier: rolloutDeployment
