@@ -26,7 +26,7 @@ pipeline:
                   identifier: Run
                   spec:
                     shell: Sh
-                    command: pip install -r requirements.txt
+                    command: pip install -r requirements.txt -U
               - step:
                   type: Snyk
                   name: Snyk
