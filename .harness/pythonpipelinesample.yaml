@@ -8,6 +8,7 @@ pipeline:
     ci:
       codebase:
         connectorRef: jcgithubconnector
+        repoName: python-pipeline-samples
         build: <+input>
   stages:
     - stage:
