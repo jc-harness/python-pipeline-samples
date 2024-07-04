@@ -63,6 +63,7 @@ pipeline:
                   spec:
                     language: Python
                     buildTool: Pytest
+                    args: ./test/*.py --junitxml=out_report.xml
                     runOnlySelectedTests: true
                     preCommand: pip install -r requirements.txt
                     enableTestSplitting: false
