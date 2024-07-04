@@ -77,29 +77,3 @@ pipeline:
                     tags:
                       - <+pipeline.sequenceId>
                     dockerfile: ./Dockerfile
-    - stage:
-        name: Approve deployment
-        identifier: Approve_deployment
-        description: ""
-        type: Approval
-        spec:
-          execution:
-            steps:
-              - step:
-                  name: Approve deployment
-                  identifier: Approve_deployment
-                  type: HarnessApproval
-                  timeout: 1d
-                  spec:
-                    approvalMessage: |-
-                      Please review the following information
-                      and approve the deplyment progression
-                    includePipelineExecutionHistory: true
-                    approvers:
-                      minimumCount: 1
-                      disallowPipelineExecutor: false
-                      userGroups:
-                        - _project_all_users
-                    isAutoRejectEnabled: false
-                    approverInputs: []
-        tags: {}
